@@ -1,0 +1,14 @@
+# reference: http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
+CC = gcc
+CFLAGS = -I.
+DEPS = # *.h files go here
+OBJ = errlog.o # *.o files go here
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+errlog: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+clean:
+	rm -f *.o errlog
