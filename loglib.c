@@ -18,6 +18,15 @@ static log_t *tailPtr = NULL;
 static log_t **travPtrs = NULL;
 static int travPtrs_size = 0;
 
+/* creates a new error log message that may be added to the list */
+data_t createMsg(time_t time, char *string)
+{
+	data_t datum;
+	datum.time = time;
+	datum.string = string;
+
+	return datum;
+}
 /* inserts a copy of the data item at the end of the list  */
 int addMsg(data_t data)
 {
@@ -42,11 +51,13 @@ int addMsg(data_t data)
 	return 0;
 }
 
-/* releases all the storage that has been allocated and empties the list of logged 
- * messages  */
+/* releases all the storage that has been allocated and empties the list of 
+ * logged messages  */
 void clearLog(void)
 {
-
+	int key;
+	while ((key = accessData()) > 0)
+		freeKey(key);
 }
 
 /* allocates enough space for a string containing the entire log, copies the 
@@ -126,12 +137,26 @@ int getData(int key, data_t *data_p)
 
 	t = travPtrs[key];
 	data_p->string = (char *)malloc(strlen(t->item.string) + 1);
-	if (data_p->string == NULL) return -1; /* couldn't allocate space for returning string */
+	if (data_p->string == NULL) return -1; /* couldn't allocate space for 
+											  returning string */
 
 	data_p->time = t->item.time;
 	strcpy(data_p->string, t->item.string);
 	if (t->next == NULL) travPtrs[key] = &endList;
 	else travPtrs[key] = t->next;
 
+	return 0;
+}
+
+/* free list entry corresponding to key */
+int freeKey(int key)
+{
+	if ( (key < 0) || (key >= travPtrs_size) ) /* key out of range */
+	{
+		errno = EINVAL;
+		return -1;
+	}
+
+	travPtrs[key] = NULL;
 	return 0;
 }

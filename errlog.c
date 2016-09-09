@@ -3,22 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <time.h>
+#include <stdint.h> /* used for ptr -> int conversion */
+#include "log.h"
+#include "timeformat.h"
 
 /*
  * cmd line args:
- *	-h				a usefule message describing the function of all the command line 
- *					arguments should be displayed.
+ *	-h				a usefule message describing the function of all the 
+ *					command line arguments should be displayed.
  *	-help			see '-h'
- *	-n x			set a variable in your program to the integer x. The value of this 
- *					variable should be logged every time your program is run using the 
- *					logging utility above. The default value of this variable should be 42.
+ *	-n x			set the number of error messages to log to the list to 
+ *					the integer x. The value of this variable should be logged 
+ *					every time your program is run using the logging utility 
+ *					above. The default value of this variable should be 42.
  *	-l filename		set the name of the log file. Default name is logfile.txt
  */
 int main(int argc, char *argv[])
 {
 	char *filename = "logfile.txt";
-	int myVar = 42;
-	char helpMsg[] = "--insert an arbitrary help msg here--";
+	int errIter = 42; /* number of error messages to include in the list */
 
 	int opt; /* holds the current command line argument */
 	const char *short_opt = "n:l:h";
@@ -38,8 +42,10 @@ int main(int argc, char *argv[])
 			case 'h':
 				printf("Usage: %s [OPTIONS]\n", argv[0]);
 				printf("    -h, --help     Prints this help and exit\n");
-				printf("    -n x           Sets a variable within the program to x. Default value is '42'\n");
-				printf("    -l filename    Sets the name of the logfile. Default name is 'logfile.txt'\n");
+				printf("    -n x           Sets a variable within the "
+					   "program to x. Default value is '42'\n");
+				printf("    -l filename    Sets the name of the logfile. "
+					   "Default name is 'logfile.txt'\n");
 				return 0;
 				break;
 
@@ -48,7 +54,7 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'n':
-				myVar = atoi(optarg);
+				errIter = atoi(optarg);
 				break;
 
 			case ':':
@@ -62,10 +68,29 @@ int main(int argc, char *argv[])
 				return -2;
 		}
 	};
+	
+	//const int buffSize = 22; /* longest string: "[31 12 2016 23:59:59]" = 21 
+	//							chars, plus one for '\0' */
+	//char timeStr[buffSize];
+	//formatTime(timeStr, buffSize);
+	char *errMsg = "this is a test error message";
+	time_t errTime = time(NULL);
+	data_t tmpData = createMsg(errTime, errMsg);
 
-	printf("this is the filename: %s\n", filename);
-	printf("this is the int var:  %d\n", myVar);
+	addMsg(tmpData);
 
+	int key;
+	if ( (key = (intptr_t)accessData()) >= 0)
+	{
+		getData(key, &tmpData);
+		printf("%s : %s : %s\n", 
+				argv[0], 
+				getTime(&tmpData.time), 
+				tmpData.string);
+	}
+
+		
+	
 	return 0;
 }
 
