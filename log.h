@@ -1,5 +1,8 @@
 
+#include <stdint.h>
+#include <stdio.h>
 #include <time.h>
+#include "timeformat.h"
 
 /* holds a time value and a pointer to a character string */
 typedef struct data_struct
@@ -20,10 +23,10 @@ void clearLog(void);
 
 /* allocates enough space for a string containing the entire log, copies the 
  * log into this string, and returns a pointer to the string */
-char *getLog(void);						
+char *getLog(char *);						
 
 /* saves the logged messages to a disk file */
-int saveLog(char *filename);
+int saveLog(char *, char *);
 
 /* Attempts to read the current head of the list. returns a nonnegative key 
  * if successful */

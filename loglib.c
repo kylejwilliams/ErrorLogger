@@ -67,18 +67,43 @@ void clearLog(void)
 
 /* allocates enough space for a string containing the entire log, copies the 
  * log into this string, and returns a pointer to the string */
-char *getLog(void)
+char *getLog(char *execName)
 {
-	return NULL;
+	int key = (intptr_t)accessData();
+	data_t tmpData;
+	char *output = (char *)malloc(sizeof(char));
+	int len = 0;
+
+	if (key < 0)
+		return NULL;
+
+	while ((getData(key, &tmpData) == 0) && (tmpData.string != NULL))
+	{
+		len += 1 + strlen(execName) 
+			+ 2*strlen(" : ") 
+			+ strlen(getTime(&tmpData.time))
+			+ strlen(tmpData.string)
+			+ strlen("\n");
+		
+		output = (char *)realloc(output, len);
+
+		sprintf(output, "%s%s : %s : %s\n",
+				output,
+				execName,
+				getTime(&tmpData.time),
+				tmpData.string);
+	}
+	
+	return output;
 }
 
 /* saves the logged messages to a disk file */
-int saveLog(char *filename) 
+int saveLog(char *filename, char *execName) 
 {
 	FILE *fp;
 
 	fp = fopen(filename, "w");
-	fprintf(fp, "%s", getLog());
+	fprintf(fp, "%s", getLog(execName));
 	fclose(fp);
 
 	return 0;

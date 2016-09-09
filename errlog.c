@@ -86,42 +86,9 @@ int main(int argc, char *argv[])
 	};
 	
 	createErrorLog(numErrs);
-
-	int key;
-	data_t tmpData;
-
-	key = (intptr_t)accessData();
-	if (key < 0)
-	{
-		printf("Empty list");
-		return;
-	}
-	while ((getData(key, &tmpData) == 0) && (tmpData.string != NULL))
-	{
-		printf("%s : %s : %s\n",
-				argv[0],
-				getTime(&tmpData.time),
-				tmpData.string);
-	}
-
+	saveLog(filename, argv[0]);
 	clearLog();
-	printf("LOG CLEARED\n");
 
-	key = (intptr_t)accessData();
-	if (key < 0)
-	{
-		printf("Empty list");
-		return;
-	}
-	while ((getData(key, &tmpData) == 0) && (tmpData.string != NULL))
-	{
-		printf("%s : %s : %s\n",
-				argv[0],
-				getTime(&tmpData.time),
-				tmpData.string);
-	}
-
-	
 	return 0;
 }
 

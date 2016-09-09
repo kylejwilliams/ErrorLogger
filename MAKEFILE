@@ -10,5 +10,8 @@ OBJ = loglib.o timeformat.o errlog.o # *.o files go here
 errlog: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+debug: *.c
+	$(CC) -g $^
+
 clean:
 	rm -f *.o errlog
