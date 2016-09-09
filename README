@@ -1,1 +1,37 @@
-# ErrorLogger
+Error Logger Utility
+Project 01, cs4760
+
+By Kyle Williams
+08 September 2016
+
+TO RUN PROGRAM:
+---------------	
+the program takes 4 command line arguments, as follows:
+	-h, --help		displays a help message
+	-n x			sets the number of error messages that you would like 
+					logged to the file
+					Default value: 42
+	-l filename		sets the name that you would like the log saved to.
+					Default value: logfile.txt
+After execution, a file with the given name will be placed in your directory.
+This file will contain the logged error messages in the following format:
+'errLogger : [ date/time ] : [ error message]'
+
+REFERENCE MATERIAL
+------------------
+A decent portion of the code for this project was able to be taken and adapted
+from the 2nd Chapter of our textbook, most notably the 'listlib.h/.c' files. 
+
+PRECAUTIONS
+-----------
+Due to time constraints, there are very few error handling procedures, and 
+some of them are pretty dangerous. For instance, in getLog() where we are 
+building a string from the logged error messages, I am not checking for 
+realloc() failures and am directly reallocating memory of the 'main' string
+and not a temporary one. While the program has been tested and runs 
+successfully on Hoare, it has the potential to break spectacularly.
+
+VERSION CONTROL
+---------------
+I utilized git rather than RCS. My git commit log and files can be found here:
+https://github.com/kylejwilliams/ErrorLogger/commits/master
