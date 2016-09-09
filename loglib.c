@@ -1,6 +1,7 @@
 
 #include <errno.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "log.h"
 
@@ -55,9 +56,13 @@ int addMsg(data_t data)
  * logged messages  */
 void clearLog(void)
 {
-	int key;
-	while ((key = accessData()) > 0)
-		freeKey(key);
+	log_t *temp;
+	while (headPtr != NULL)
+	{
+		temp = headPtr;
+		headPtr = temp->next;
+		free(temp);
+	}
 }
 
 /* allocates enough space for a string containing the entire log, copies the 
@@ -70,6 +75,12 @@ char *getLog(void)
 /* saves the logged messages to a disk file */
 int saveLog(char *filename) 
 {
+	FILE *fp;
+
+	fp = fopen(filename, "w");
+	fprintf(fp, "%s", getLog());
+	fclose(fp);
+
 	return 0;
 }
 
